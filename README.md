@@ -1,83 +1,161 @@
-# 🌋 LandslideAI
+# 🌍 LandslideAI
 
-## AI-Based Landslide Risk Monitoring System
+### AI-Powered Landslide Risk Monitoring & Prediction System
 
-LandslideAI is a web-based AI system that analyzes **14-channel satellite data** using a **U-Net deep learning model** to detect potential landslide regions and generate a preliminary risk score.
+LandslideAI is an AI-based landslide monitoring system that uses **Deep Learning and U-Net segmentation** to detect potential landslide regions from multi-channel geospatial image data and estimate the corresponding risk level.
+
+The system provides a web-based dashboard for uploading H5 image data, generating AI predictions, visualizing results, monitoring risk levels, and displaying recommended precautions.
 
 ---
 
 ## 🚀 Features
 
-* 🛰️ 14-channel H5 satellite data
-* 🧠 U-Net deep learning model
-* 📊 Predicted landslide area
-* 📈 Mean and maximum probability
-* ⚡ Risk score from 0–100
-* 🚦 Low, Moderate, High and Very High risk levels
-* 📤 H5 image upload
-* 🚨 Risk alerts
-* 📊 Analytics dashboard
-* 🖼️ Prediction visualization
-* 🛡️ Risk-based precautions
+* 🧠 AI-based landslide segmentation using **U-Net**
+* 🛰️ Supports multi-channel H5 geospatial image data
+* 🔍 Pixel-level landslide prediction
+* 📊 Predicted landslide area calculation
+* 📈 Probability and risk score calculation
+* 🚨 Automatic risk classification
+* 🎨 Interactive visualization of prediction results
+* 📋 AI Predictions dashboard
+* ⚠️ Risk Alerts
+* 🛡️ Recommended precautions
+* 🌐 React-based modern web interface
+* ⚡ FastAPI backend for AI inference
 
 ---
 
-## 🔄 How It Works
+## 🏗️ System Workflow
 
 ```text
-H5 Satellite Image
+H5 Geospatial Image
         ↓
-Preprocessing
+128 × 128 × 14 Input
         ↓
-U-Net Model
+Preprocessing & Normalization
         ↓
-Landslide Prediction
+U-Net Deep Learning Model
         ↓
-Probability + Area
+Pixel-Level Segmentation
         ↓
-Risk Score
+Probability Map
         ↓
-Risk Level
+Landslide Mask
         ↓
-Dashboard + Alerts + Precautions
+Risk Calculation
+        ↓
+Risk Classification
+        ↓
+Dashboard & Alerts
 ```
 
 ---
 
 ## 🧠 AI Model
 
-The project uses a **U-Net segmentation model**.
+LandslideAI uses a **U-Net Convolutional Neural Network** for semantic segmentation.
 
-### Input
+### Model Input
 
 ```text
-128 × 128 × 14
+Input Shape: 128 × 128 × 14
 ```
 
-### Output
+The 14 channels contain multi-source information used by the segmentation model.
 
-The model generates a pixel-level landslide prediction map.
+### Model Output
 
-A probability above `0.5` is treated as a predicted landslide pixel.
+```text
+Output Shape: 128 × 128 × 1
+```
 
----
-
-## 📊 Risk Levels
-
-| Risk Score | Level     |
-| ---------- | --------- |
-| 0 – <20    | Low       |
-| 20 – <45   | Moderate  |
-| 45 – <70   | High      |
-| 70 – 100   | Very High |
+Each pixel receives a probability indicating how likely it is to belong to a landslide region.
 
 ---
 
-## 🛠️ Technology Used
+## 📊 Risk Calculation
+
+The system calculates the risk using:
+
+### Predicted Area
+
+The percentage of pixels classified as landslide.
+
+```text
+Predicted Area =
+(Landslide Pixels / Total Pixels) × 100
+```
+
+### Mean Probability
+
+Average prediction probability of pixels classified as landslide.
+
+### Maximum Probability
+
+Highest landslide probability detected in the image.
+
+### Risk Score
+
+The system combines predicted landslide area and model probability to generate a risk score between:
+
+```text
+0 – 100
+```
+
+---
+
+## 🚨 Risk Levels
+
+| Risk Score | Risk Level   |
+| ---------- | ------------ |
+| 0 – 19.99  | 🟢 Low       |
+| 20 – 44.99 | 🟡 Moderate  |
+| 45 – 69.99 | 🟠 High      |
+| 70 – 100   | 🔴 Very High |
+
+> **Note:** These risk levels are part of the project's preliminary risk engine and are not an official government hazard classification.
+
+---
+
+## 🖥️ Dashboard
+
+The web application contains:
+
+### Dashboard
+
+Displays the current prediction summary and risk statistics.
+
+### Analytics
+
+Provides visual information about prediction and risk results.
+
+### AI Predictions
+
+Displays prediction results with:
+
+* Image name
+* Predicted area
+* Mean probability
+* Maximum probability
+* Risk score
+* Risk level
+* Visualization
+
+### Risk Alerts
+
+Displays alerts for high-risk predictions.
+
+### Recommended Precautions
+
+Provides general precautions according to the detected risk level.
+
+---
+
+## 🛠️ Tech Stack
 
 ### Frontend
 
-* React
+* React.js
 * Vite
 * JavaScript
 * CSS
@@ -88,175 +166,300 @@ A probability above `0.5` is treated as a predicted landslide pixel.
 * FastAPI
 * Uvicorn
 
-### AI / ML
+### Machine Learning
 
 * PyTorch
 * U-Net
 * NumPy
-* Pandas
-* H5PY
+* h5py
 
-### Visualization
+### Data Visualization
 
 * Matplotlib
+* React-based dashboard components
 
 ---
 
-## 📁 Project Structure
+## 📂 Project Structure
 
 ```text
 LandslideAI/
 │
 ├── frontend-react/
-├── frontend/
+│   ├── src/
+│   │   ├── App.jsx
+│   │   ├── Predictions.jsx
+│   │   ├── RiskAlerts.jsx
+│   │   └── ...
+│   ├── package.json
+│   └── vite.config.js
+│
 ├── src/
 │   ├── api.py
 │   ├── unet_model.py
 │   ├── train.py
+│   ├── test_model.py
 │   ├── dataset.py
-│   ├── dataloader.py
-│   ├── loss.py
 │   └── ...
 │
 ├── models/
+│   ├── best_unet.pth
+│   └── channel_stats.npz
+│
 ├── predictions/
+│   └── ...
+│
+├── TestData/
+│   └── img/
+│
 ├── screenshots/
+│   └── ...
+│
 ├── .gitignore
-└── README.md
+├── README.md
+└── requirements.txt
 ```
+
+---
+
+## 📚 Dataset
+
+This project uses the **Landslide4Sense** dataset.
+
+### Kaggle Dataset
+
+https://www.kaggle.com/datasets/tekbahadurkshetri/landslide4sense?resource=download
+
+The dataset provides the geospatial image data used for training, validation, and testing of the landslide segmentation model.
 
 ---
 
 ## ⚙️ Installation
 
-### 1. Clone the project
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/nishantdharav09/LandslideAI.git
+```
+
+```bash
 cd LandslideAI
 ```
 
-### 2. Install Python packages
+---
+
+## 🐍 Backend Setup
+
+Create a Python environment:
 
 ```bash
-pip install torch fastapi uvicorn h5py matplotlib numpy pandas python-multipart
+python -m venv .venv
 ```
 
-### 3. Install frontend packages
+Activate it on Windows:
+
+```powershell
+.venv\Scripts\activate
+```
+
+Install dependencies:
 
 ```bash
-cd frontend-react
-npm install
-cd ..
+pip install -r requirements.txt
 ```
 
----
-
-## 📦 Required Model Files
-
-The trained model and large data files are not included in the GitHub repository.
-
-You need:
-
-```text
-models/
-├── best_unet.pth
-└── channel_stats.npz
-```
-
-Download them from:
-
-* **Model:** `YOUR_MODEL_LINK`
-* **Statistics:** `YOUR_STATS_LINK`
-
-Place both files inside the `models` folder.
-
----
-
-## 📤 Sample H5 File
-
-The system expects an H5 file containing:
-
-```text
-dataset: img
-shape: (128, 128, 14)
-```
-
-Sample file:
-
-```text
-image_677.h5
-```
-
-Download:
-
-`YOUR_H5_LINK`
-
-You can select the H5 file directly from the dashboard.
-
----
-
-## ▶️ Run the Project
-
-### Start Backend
-
-From the project root:
+Start the FastAPI backend:
 
 ```bash
 python -m uvicorn src.api:app --host 127.0.0.1 --port 8010
 ```
 
-Backend:
+Backend will run at:
 
 ```text
 http://127.0.0.1:8010
 ```
 
-### Start Frontend
+Swagger API documentation:
 
-Open another terminal:
+```text
+http://127.0.0.1:8010/docs
+```
 
-```bash
+---
+
+## ⚛️ Frontend Setup
+
+Open a new terminal:
+
+```powershell
+cd frontend-react
+```
+
+Install dependencies:
+
+```powershell
+npm install
+```
+
+Start the React application:
+
+```powershell
+npm run dev
+```
+
+Frontend will run at:
+
+```text
+http://localhost:5173/
+```
+
+---
+
+## ▶️ Running the Project
+
+Run both servers:
+
+### Backend
+
+```powershell
+python -m uvicorn src.api:app --host 127.0.0.1 --port 8010
+```
+
+### Frontend
+
+```powershell
 cd frontend-react
 npm run dev
 ```
 
-Frontend:
+Then open:
 
 ```text
-http://localhost:5173
+http://localhost:5173/
 ```
 
 ---
 
-## 📌 Example Result
+## 📤 Prediction Process
+
+1. Open the LandslideAI web application.
+2. Upload a valid `.h5` image file.
+3. The backend reads the `img` dataset.
+4. The image is converted from HWC to CHW format.
+5. Input channels are normalized.
+6. The trained U-Net model performs segmentation.
+7. A probability map is generated.
+8. Pixels above the prediction threshold are classified as landslide.
+9. The system calculates:
+
+   * Predicted Area
+   * Mean Probability
+   * Maximum Probability
+   * Risk Score
+10. The final risk level is displayed on the dashboard.
+
+---
+
+## 📈 Example Prediction
+
+Example output:
 
 ```text
-Image: image_677.h5
-
-Predicted Area: 7.40%
-Mean Probability: 85.41%
-Max Probability: 99.90%
-Risk Score: 45.27
-Risk Level: High
+Input Shape      : 128 × 128 × 14
+Predicted Area   : 7.40%
+Mean Probability : 85.41%
+Max Probability  : 99.90%
+Risk Score       : 45.27 / 100
+Risk Level       : High
 ```
 
 ---
 
-## ⚠️ Important Note
+## 🔬 Model Performance
 
-LandslideAI provides a **preliminary AI-based risk indicator**.
+During model training, the project evaluates the segmentation model using validation data.
 
-It should be used for monitoring and prioritization and should not be considered an official government hazard classification or a replacement for professional assessment and official warnings.
+The project can be extended with additional metrics such as:
+
+* Dice Score
+* IoU
+* Precision
+* Recall
+* F1 Score
 
 ---
 
-## 👨‍💻 Project
+## 🌐 API Endpoints
 
-**LandslideAI**
+### Health Check
 
-AI-Based Landslide Risk Monitoring System
+```text
+GET /api/health
+```
+
+### Prediction
+
+```text
+POST /api/predict
+```
+
+### Risk Summary
+
+```text
+GET /api/risk-summary
+```
+
+### Top Risk Predictions
+
+```text
+GET /api/top-risk
+```
+
+### Prediction Visualization
+
+```text
+GET /api/prediction/{image_id}/visualization
+```
+
+---
+
+## 🔮 Future Improvements
+
+* Real-time satellite data integration
+* Weather and rainfall integration
+* Geographic mapping using GIS
+* Real-time monitoring
+* Improved risk calibration
+* Larger and more diverse training datasets
+* Cloud deployment
+* Mobile application
+* Automated early-warning notifications
+
+---
+
+## ⚠️ Disclaimer
+
+LandslideAI is an **AI-based research and educational prototype**.
+
+The predictions and risk scores generated by this system should not be treated as official geological, governmental, or emergency warnings.
+
+Actual landslide assessment should be performed using appropriate geological, environmental, meteorological, and field data by qualified authorities and experts.
+
+---
+
+## 👨‍💻 Author
+
+**Nishant Dharav**
 
 GitHub:
 
 https://github.com/nishantdharav09/LandslideAI
+
+---
+
+## ⭐ Project Objective
+
+The main objective of LandslideAI is to demonstrate how **Artificial Intelligence, Deep Learning, Computer Vision, and Web Technologies** can be combined to build a preliminary landslide monitoring and risk prediction system.
+
+---
