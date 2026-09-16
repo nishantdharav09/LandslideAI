@@ -1,35 +1,32 @@
 # 🌍 LandslideAI
 
-**LandslideAI** is an AI-based project developed to detect possible landslide areas from geospatial image data and predict the risk level.
+LandslideAI is an AI/ML project for detecting possible landslide areas from geospatial images and showing the risk level.
 
-The project uses a **U-Net deep learning model** for landslide segmentation and provides the prediction results through a web-based dashboard.
+This project was developed as a student project to learn and apply **Machine Learning, Deep Learning and Web Development**.
 
-## 📌 Project Features
+## 📌 Features
 
-* Landslide area detection using AI
-* U-Net based image segmentation
-* Support for H5 image data
-* Landslide probability prediction
-* Predicted area calculation
-* Risk score calculation
-* Risk classification
+* Landslide detection using AI
+* U-Net deep learning model
+* H5 image support
+* Landslide area prediction
+* Risk score
+* Risk level
 * Prediction visualization
 * Risk alerts
 * Recommended precautions
-* Interactive web dashboard
+* Web dashboard
 
-## 🧠 How the Project Works
+## 🧠 How It Works
 
 ```text
 H5 Image
    ↓
-Image Preprocessing
+Preprocessing
    ↓
 U-Net Model
    ↓
 Landslide Prediction
-   ↓
-Probability Map
    ↓
 Risk Calculation
    ↓
@@ -38,46 +35,24 @@ Risk Level
 Dashboard
 ```
 
-## 🚨 Risk Levels
-
-| Risk Score | Risk Level |
-| ---------- | ---------- |
-| 0 – 19     | Low        |
-| 20 – 44    | Moderate   |
-| 45 – 69    | High       |
-| 70 – 100   | Very High  |
-
 ## 🛠️ Technologies Used
 
-### Frontend
-
-* React.js
-* Vite
-* JavaScript
-* CSS
-
-### Backend
-
 * Python
-* FastAPI
-* Uvicorn
-
-### Machine Learning
-
 * PyTorch
 * U-Net
+* FastAPI
+* React.js
+* Vite
 * NumPy
 * h5py
 
 ## 📂 Dataset
 
-This project uses the **Landslide4Sense Dataset**.
+This project uses the **Landslide4Sense Dataset** from Kaggle.
 
-### Kaggle Dataset Link
+Kaggle Link:
 
 https://www.kaggle.com/datasets/tekbahadurkshetri/landslide4sense?resource=download
-
-The dataset is used for training, validation and testing of the landslide detection model.
 
 ## 📁 Project Structure
 
@@ -85,54 +60,60 @@ The dataset is used for training, validation and testing of the landslide detect
 LandslideAI/
 │
 ├── frontend-react/
-│   ├── src/
-│   ├── package.json
-│   └── ...
-│
 ├── src/
-│   ├── api.py
-│   ├── train.py
-│   ├── unet_model.py
-│   ├── dataset.py
-│   └── ...
-│
 ├── models/
-│   ├── best_unet.pth
-│   └── channel_stats.npz
-│
 ├── TestData/
-│   └── img/
-│
 ├── predictions/
-│
 ├── screenshots/
-│
 ├── requirements.txt
 ├── .gitignore
 └── README.md
 ```
 
+## 🤖 Model Files
+
+The project uses:
+
+```text
+models/
+├── best_unet.pth
+└── channel_stats.npz
+```
+
+These files are required to run the prediction system.
+
 ## ⚙️ Installation
 
-Clone the repository:
+Clone the project:
 
 ```bash
 git clone https://github.com/nishantdharav09/LandslideAI.git
 ```
 
-Go to the project folder:
+Go to the project:
 
 ```bash
 cd LandslideAI
 ```
 
-Install Python dependencies:
+Install Python packages:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## ▶️ Run Backend
+For frontend:
+
+```bash
+cd frontend-react
+npm install
+```
+
+## ▶️ Run the Project
+
+### Backend
+
+From the main project folder:
 
 ```bash
 python -m uvicorn src.api:app --host 127.0.0.1 --port 8010
@@ -144,77 +125,64 @@ Backend:
 http://127.0.0.1:8010
 ```
 
-API Documentation:
-
-```text
-http://127.0.0.1:8010/docs
-```
-
-## ▶️ Run Frontend
+### Frontend
 
 Open another terminal:
 
 ```bash
 cd frontend-react
-```
-
-Install frontend packages:
-
-```bash
-npm install
-```
-
-Run the frontend:
-
-```bash
 npm run dev
 ```
 
-Open the application:
+Frontend:
 
 ```text
 http://localhost:5173/
 ```
 
-## 📊 Example Prediction
+## 📊 Prediction Result
 
-For an uploaded H5 image, the system shows information such as:
+The application shows:
 
-```text
-Predicted Area
-Mean Probability
-Maximum Probability
-Risk Score
-Risk Level
-```
+* Predicted Area
+* Mean Probability
+* Maximum Probability
+* Risk Score
+* Risk Level
+* Prediction Image
 
-The result is also shown on the dashboard with a visualization of the predicted landslide area.
+## 🚨 Risk Levels
+
+| Score  | Risk      |
+| ------ | --------- |
+| 0–19   | Low       |
+| 20–44  | Moderate  |
+| 45–69  | High      |
+| 70–100 | Very High |
 
 ## 🎯 Project Objective
 
-The main objective of this project is to use **Artificial Intelligence and Deep Learning** for detecting possible landslide regions and presenting the results in an easy-to-understand web dashboard.
-
-This project was developed as a student AI/ML project for learning and demonstrating the practical use of deep learning, image segmentation, and web technologies.
+The main aim of this project is to use AI and Deep Learning to detect possible landslide regions and display the result in a simple web application.
 
 ## 🔮 Future Scope
 
 * Real-time satellite data
-* Weather and rainfall data integration
-* GIS map integration
-* Real-time monitoring
+* Weather and rainfall data
+* GIS map
 * Mobile application
 * Better risk prediction
-* Automated warning notifications
+* Real-time alerts
 
 ## ⚠️ Disclaimer
 
-This project is developed for **educational and project demonstration purposes**.
+This project is made for **educational and student project purposes**.
 
-The predicted risk should not be considered an official geological or government warning.
+The prediction results should not be treated as an official government or emergency warning.
 
 ## 👨‍💻 Author
 
 **Nishant Dharav**
 
 GitHub:
+
 https://github.com/nishantdharav09/LandslideAI
