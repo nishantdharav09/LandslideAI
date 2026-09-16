@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+
+# Node / React
+node_modules/
+dist/
+.vite/
+
+# Python environments
+.venv/
+venv/
+env/
+
+# Environment / secrets
+.env
+.env.*
+
+# Large AI files
+*.h5
+*.pth
+*.pt
+*.npz
+
+# Generated prediction visualizations
+predictions/visualizations/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db

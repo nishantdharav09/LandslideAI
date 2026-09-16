@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LandslideAI | Risk Monitoring System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0b1120;
+            --panel: #111827;
+            --panel-light: #172033;
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --blue: #3b82f6;
+            --cyan: #06b6d4;
+            --green: #22c55e;
+            --yellow: #f59e0b;
+            --red: #ef4444;
+            --purple: #8b5cf6;
+        }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background:
+                radial-gradient(circle at top right, rgba(59,130,246,0.12), transparent 30%),
+                radial-gradient(circle at bottom left, rgba(6,182,212,0.08), transparent 25%),
+                var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            width: 250px;
+            background: rgba(15, 23, 42, 0.94);
+            border-right: 1px solid var(--border);
+            padding: 24px 16px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 10px 28px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--blue), var(--cyan));
+            font-size: 21px;
+            box-shadow: 0 8px 25px rgba(59,130,246,0.28);
+        }
+
+        .brand h1 {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .brand p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .nav-title {
+            color: #64748b;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 12px 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            margin-bottom: 6px;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(59,130,246,0.12);
+            color: white;
+        }
+
+        .nav-item.active {
+            border: 1px solid rgba(59,130,246,0.18);
+        }
+
+        .system-status {
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            bottom: 20px;
+            padding: 14px;
+            background: rgba(34,197,94,0.06);
+            border: 1px solid rgba(34,197,94,0.15);
+            border-radius: 12px;
+        }
+
+        .status-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #cbd5e1;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 10px rgba(34,197,94,0.7);
+        }
+
+        .status-small {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            padding: 26px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 26px;
+        }
+
+        .page-title h2 {
+            font-size: 29px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .page-title p {
+            color: var(--muted);
+            margin-top: 5px;
+            font-size: 13px;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(34,197,94,0.08);
+            border: 1px solid rgba(34,197,94,0.18);
+            padding: 9px 13px;
+            border-radius: 10px;
+            color: #bbf7d0;
+            font-size: 12px;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+        }
+
+        .refresh-btn {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            color: white;
+            padding: 9px 13px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .refresh-btn:hover {
+            background: var(--panel-light);
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            background:
+                linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.08)),
+                var(--panel);
+            border: 1px solid rgba(59,130,246,0.18);
+            border-radius: 18px;
+            padding: 26px;
+            margin-bottom: 22px;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            right: -90px;
+            top: -120px;
+            border-radius: 50%;
+            background: rgba(59,130,246,0.09);
+            filter: blur(8px);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-label {
+            color: #93c5fd;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.7px;
+            margin-bottom: 9px;
+        }
+
+        .hero h3 {
+            font-size: 26px;
+            margin-bottom: 7px;
+        }
+
+        .hero p {
+            max-width: 690px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            font-size: 13px;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 17px;
+        }
+
+        .meta-chip {
+            padding: 7px 10px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: #cbd5e1;
+            font-size: 11px;
+        }
+
+        /* ================= KPI ================= */
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .card {
+            background: rgba(17,24,39,0.84);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.14);
+        }
+
+        .kpi-card {
+            padding: 19px;
+        }
+
+        .kpi-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .kpi-label {
+            color: var(--muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .kpi-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(59,130,246,0.10);
+            color: #93c5fd;
+        }
+
+        .kpi-value {
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .kpi-sub {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 5px;
+        }
+
+        /* ================= GRID ================= */
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.35fr 1fr;
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .panel {
+            padding: 20px;
+        }
+
+        .panel-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .panel-title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .panel-sub {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .view-btn {
+            font-size: 11px;
+            color: #93c5fd;
+            cursor: pointer;
+        }
+
+        /* ================= RISK BARS ================= */
+
+        .risk-row {
+            margin-bottom: 19px;
+        }
+
+        .risk-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            font-size: 12px;
+        }
+
+        .risk-name {
+            color: #cbd5e1;
+        }
+
+        .risk-count {
+            font-weight: 700;
+        }
+
+        .progress {
+            height: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: inherit;
+            transition: width 0.8s ease;
+        }
+
+        .low-fill {
+            background: var(--green);
+        }
+
+        .moderate-fill {
+            background: var(--yellow);
+        }
+
+        .high-fill {
+            background: #f97316;
+        }
+
+        .veryhigh-fill {
+            background: var(--red);
+        }
+
+        /* ================= SCORE ================= */
+
+        .score-box {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            padding: 10px 0 5px;
+        }
+
+        .score-ring {
+            width: 145px;
+            height: 145px;
+            border-radius: 50%;
+            background:
+                conic-gradient(
+                    var(--blue) 0deg,
+                    var(--cyan) 117deg,
+                    rgba(255,255,255,0.06) 117deg 360deg
+                );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .score-inner {
+            width: 113px;
+            height: 113px;
+            border-radius: 50%;
+            background: var(--panel);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-number {
+            font-size: 29px;
+            font-weight: 800;
+        }
+
+        .score-label {
+            color: var(--muted);
+            font-size: 10px;
+            margin-top: 3px;
+        }
+
+        .score-details {
+            flex: 1;
+        }
+
+        .score-detail {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .score-detail:last-child {
+            border-bottom: none;
+        }
+
+        .score-detail span:first-child {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            margin-bottom: 3px;
+        }
+
+        .score-detail strong {
+            font-size: 17px;
+        }
+
+        /* ================= LOWER CARDS ================= */
+
+        .lower-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 18px;
+        }
+
+        .alert-box {
+            padding: 14px;
+            border-radius: 12px;
+            background: rgba(239,68,68,0.07);
+            border: 1px solid rgba(239,68,68,0.15);
+            display: flex;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .alert-icon {
+            font-size: 18px;
+        }
+
+        .alert-content strong {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .alert-content p {
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .info-box {
+            padding: 14px;
+            background: rgba(59,130,246,0.06);
+            border: 1px solid rgba(59,130,246,0.14);
+            border-radius: 12px;
+            color: #bfdbfe;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px 0 8px;
+            color: #64748b;
+            font-size: 10px;
+        }
+
+        /* ================= LOADING ================= */
+
+        .loading {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1100px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dashboard-grid,
+            .lower-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .sidebar {
+                width: 70px;
+                padding: 18px 8px;
+            }
+
+            .brand-text,
+            .nav-title,
+            .nav-text,
+            .system-status {
+                display: none;
+            }
+
+            .brand {
+                justify-content: center;
+                padding-bottom: 22px;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 12px 5px;
+            }
+
+            .main {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+                padding: 18px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .top-actions {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .score-box {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">⛰️</div>
+
+            <div class="brand-text">
+                <h1>LandslideAI</h1>
+                <p>Risk Monitoring</p>
+            </div>
+        </div>
+
+        <div class="nav-title">Monitoring</div>
+
+        <div class="nav-item active">
+            <span>▦</span>
+            <span class="nav-text">Dashboard</span>
+        </div>
+
+        <div class="nav-item">
+            <span>◉</span>
+            <span class="nav-text">AI Predictions</span>
+        </div>
+
+        <div class="nav-item">
+            <span>⚠</span>
+            <span class="nav-text">Risk Alerts</span>
+        </div>
+
+        <div class="nav-item">
+            <span>◌</span>
+            <span class="nav-text">Analytics</span>
+        </div>
+
+        <div class="nav-title">System</div>
+
+        <div class="nav-item">
+            <span>⚙</span>
+            <span class="nav-text">Model Status</span>
+        </div>
+
+        <div class="system-status">
+            <div class="status-row">
+                <div class="status-dot"></div>
+                <span>API Online</span>
+            </div>
+
+            <div class="status-small">
+                U-Net inference engine active
+            </div>
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main">
+
+        <div class="topbar">
+
+            <div class="page-title">
+                <h2>Landslide Risk Dashboard</h2>
+                <p>AI-powered monitoring and early warning intelligence</p>
+            </div>
+
+            <div class="top-actions">
+
+                <div class="live-badge">
+                    <div class="live-dot"></div>
+                    System Live
+                </div>
+
+                <button class="refresh-btn" onclick="loadDashboard()">
+                    ↻ Refresh
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= HERO ================= -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="hero-label">
+                    AI-Based Early Warning System
+                </div>
+
+                <h3>
+                    Intelligent Landslide Risk Monitoring
+                </h3>
+
+                <p>
+                    LandslideAI analyzes multi-channel geospatial imagery
+                    using a deep-learning segmentation model to identify
+                    potential landslide regions and generate preliminary
+                    risk indicators for monitoring and early-warning workflows.
+                </p>
+
+                <div class="hero-meta">
+
+                    <div class="meta-chip">
+                        🧠 Model: U-Net
+                    </div>
+
+                    <div class="meta-chip">
+                        🛰️ Input Channels: 14
+                    </div>
+
+                    <div class="meta-chip">
+                        📊 Prediction Set: 800
+                    </div>
+
+                    <div class="meta-chip">
+                        ⚡ Risk Engine: Active
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= KPI ================= -->
+
+        <section class="kpi-grid">
+
+            <div class="card kpi-card">
+
+                <div class="kpi-top">
+                    <div class="kpi-label">Images Analyzed</div>
+                    <div class="kpi-icon">🛰️</div>
+                </div>
+
+                <div class="kpi-value" id="totalImages">
+                    <span class="loading">...</span>
+                </div>
+
+                <div class="kpi-sub">
+                    Prediction records available
+                </div>
+
+            </div>
+
+
+            <div class="card kpi-card">
+
+                <div class="kpi-top">
+                    <div class="kpi-label">Average Risk</div>
+                    <div class="kpi-icon">📈</div>
+                </div>
+
+                <div class="kpi-value" id="averageRisk">
+                    <span class="loading">...</span>
+                </div>
+
+                <div class="kpi-sub">
+                    Preliminary AI-derived score
+                </div>
+
+            </div>
+
+
+            <div class="card kpi-card">
+
+                <div class="kpi-top">
+                    <div class="kpi-label">High Risk</div>
+                    <div class="kpi-icon">⚠️</div>
+                </div>
+
+                <div class="kpi-value" id="highRisk">
+                    <span class="loading">...</span>
+                </div>
+
+                <div class="kpi-sub">
+                    High + very high detections
+                </div>
+
+            </div>
+
+
+            <div class="card kpi-card">
+
+                <div class="kpi-top">
+                    <div class="kpi-label">Maximum Risk</div>
+                    <div class="kpi-icon">🚨</div>
+                </div>
+
+                <div class="kpi-value" id="maximumRisk">
+                    <span class="loading">...</span>
+                </div>
+
+                <div class="kpi-sub">
+                    Highest detected risk score
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= MAIN ANALYTICS ================= -->
+
+        <section class="dashboard-grid">
+
+            <!-- Risk distribution -->
+
+            <div class="card panel">
+
+                <div class="panel-head">
+
+                    <div>
+                        <div class="panel-title">
+                            Risk Distribution
+                        </div>
+
+                        <div class="panel-sub">
+                            Distribution across analyzed prediction tiles
+                        </div>
+                    </div>
+
+                    <div class="view-btn">
+                        Overview
+                    </div>
+
+                </div>
+
+
+                <div class="risk-row">
+
+                    <div class="risk-info">
+                        <span class="risk-name">Low Risk</span>
+                        <span class="risk-count" id="lowRisk">-</span>
+                    </div>
+
+                    <div class="progress">
+                        <div
+                            class="progress-fill low-fill"
+                            id="lowBar"
+                            style="width:0%">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="risk-row">
+
+                    <div class="risk-info">
+                        <span class="risk-name">Moderate Risk</span>
+                        <span class="risk-count" id="moderateRisk">-</span>
+                    </div>
+
+                    <div class="progress">
+                        <div
+                            class="progress-fill moderate-fill"
+                            id="moderateBar"
+                            style="width:0%">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="risk-row">
+
+                    <div class="risk-info">
+                        <span class="risk-name">High Risk</span>
+                        <span class="risk-count" id="highRiskDistribution">-</span>
+                    </div>
+
+                    <div class="progress">
+                        <div
+                            class="progress-fill high-fill"
+                            id="highBar"
+                            style="width:0%">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="risk-row">
+
+                    <div class="risk-info">
+                        <span class="risk-name">Very High Risk</span>
+                        <span class="risk-count" id="veryHighRisk">-</span>
+                    </div>
+
+                    <div class="progress">
+                        <div
+                            class="progress-fill veryhigh-fill"
+                            id="veryHighBar"
+                            style="width:0%">
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Risk score -->
+
+            <div class="card panel">
+
+                <div class="panel-head">
+
+                    <div>
+                        <div class="panel-title">
+                            System Risk Indicator
+                        </div>
+
+                        <div class="panel-sub">
+                            Aggregate monitoring signal
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="score-box">
+
+                    <div class="score-ring" id="scoreRing">
+
+                        <div class="score-inner">
+
+                            <div class="score-number" id="scoreNumber">
+                                --
+                            </div>
+
+                            <div class="score-label">
+                                Average Risk
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="score-details">
+
+                        <div class="score-detail">
+
+                            <span>Highest Recorded Score</span>
+
+                            <strong id="scoreMaximum">--</strong>
+
+                        </div>
+
+                        <div class="score-detail">
+
+                            <span>Total Prediction Records</span>
+
+                            <strong id="scoreImages">--</strong>
+
+                        </div>
+
+                        <div class="score-detail">
+
+                            <span>Risk Engine</span>
+
+                            <strong>Active</strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= ALERTS ================= -->
+
+        <section class="lower-grid">
+
+            <div class="card panel">
+
+                <div class="panel-head">
+
+                    <div>
+                        <div class="panel-title">
+                            High-Risk Monitoring
+                        </div>
+
+                        <div class="panel-sub">
+                            Current priority indicators
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="alert-box">
+
+                    <div class="alert-icon">
+                        🚨
+                    </div>
+
+                    <div class="alert-content">
+
+                        <strong>
+                            Very High Risk Zones Detected
+                        </strong>
+
+                        <p>
+                            Multiple prediction tiles have generated very-high
+                            preliminary risk scores and should be prioritized
+                            for further geospatial analysis.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="alert-box">
+
+                    <div class="alert-icon">
+                        ⚠️
+                    </div>
+
+                    <div class="alert-content">
+
+                        <strong>
+                            High-Risk Areas Require Review
+                        </strong>
+
+                        <p>
+                            High-risk predictions should be reviewed alongside
+                            terrain, rainfall and other contextual information
+                            before operational decisions.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="card panel">
+
+                <div class="panel-head">
+
+                    <div>
+                        <div class="panel-title">
+                            AI Monitoring Note
+                        </div>
+
+                        <div class="panel-sub">
+                            Interpretation guidance
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    The current risk score is a preliminary AI-derived
+                    indicator based on model predictions. It should be used
+                    as a monitoring and prioritization signal, not as an
+                    official government hazard classification.
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <div class="footer">
+            LandslideAI · AI-Based Early Warning and Landslide Risk Monitoring System
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    const API_BASE = "http://127.0.0.1:8000";
+
+
+    async function loadDashboard() {
+
+        try {
+
+            const response = await fetch(
+                `${API_BASE}/api/risk-summary`
+            );
+
+            if (!response.ok) {
+                throw new Error("API request failed");
+            }
+
+            const data = await response.json();
+
+
+            /* ================= KPI ================= */
+
+            document.getElementById("totalImages").textContent =
+                data.total_images;
+
+            document.getElementById("averageRisk").textContent =
+                Number(data.average_risk_score).toFixed(2);
+
+            document.getElementById("highRisk").textContent =
+                data.high + data.very_high;
+
+            document.getElementById("maximumRisk").textContent =
+                Number(data.maximum_risk_score).toFixed(2);
+
+
+            /* ================= RISK COUNTS ================= */
+
+            document.getElementById("lowRisk").textContent =
+                data.low;
+
+            document.getElementById("moderateRisk").textContent =
+                data.moderate;
+
+            document.getElementById("highRiskDistribution").textContent =
+                data.high;
+
+            document.getElementById("veryHighRisk").textContent =
+                data.very_high;
+
+
+            /* ================= PERCENTAGES ================= */
+
+            const total = data.total_images;
+
+            document.getElementById("lowBar").style.width =
+                `${(data.low / total) * 100}%`;
+
+            document.getElementById("moderateBar").style.width =
+                `${(data.moderate / total) * 100}%`;
+
+            document.getElementById("highBar").style.width =
+                `${(data.high / total) * 100}%`;
+
+            document.getElementById("veryHighBar").style.width =
+                `${(data.very_high / total) * 100}%`;
+
+
+            /* ================= SCORE ================= */
+
+            document.getElementById("scoreNumber").textContent =
+                Number(data.average_risk_score).toFixed(2);
+
+            document.getElementById("scoreMaximum").textContent =
+                Number(data.maximum_risk_score).toFixed(2);
+
+            document.getElementById("scoreImages").textContent =
+                data.total_images;
+
+
+            /* ================= SCORE RING ================= */
+
+            const angle =
+                Math.min(data.average_risk_score, 100) * 3.6;
+
+            document.getElementById("scoreRing").style.background =
+                `conic-gradient(
+                    var(--blue) 0deg,
+                    var(--cyan) ${angle}deg,
+                    rgba(255,255,255,0.06) ${angle}deg 360deg
+                )`;
+
+        }
+
+        catch (error) {
+
+            console.error("Dashboard Error:", error);
+
+            document.getElementById("totalImages").textContent = "API Error";
+            document.getElementById("averageRisk").textContent = "--";
+            document.getElementById("highRisk").textContent = "--";
+            document.getElementById("maximumRisk").textContent = "--";
+
+        }
+
+    }
+
+
+    /* Load dashboard on page open */
+
+    loadDashboard();
+
+
+</script>
+
+</body>
+</html>
