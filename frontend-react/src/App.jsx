@@ -9,14 +9,8 @@ const API_BASE = "http://127.0.0.1:8010";
    RISK BAR
 ========================================================= */
 
-function RiskBar({
-  label,
-  value,
-  total,
-  className,
-}) {
-  const percentage =
-    total > 0 ? (value / total) * 100 : 0;
+function RiskBar({ label, value, total, className }) {
+  const percentage = total > 0 ? (value / total) * 100 : 0;
 
   return (
     <div className="riskBar">
@@ -108,23 +102,12 @@ function buildDashboardFromPrediction(result) {
 
   return {
     total_images: 1,
-
     low: risk === "Low" ? 1 : 0,
-
-    moderate:
-      risk === "Moderate" ? 1 : 0,
-
-    high:
-      risk === "High" ? 1 : 0,
-
-    very_high:
-      risk === "Very High" ? 1 : 0,
-
-    average_risk_score:
-      prediction.risk_score,
-
-    maximum_risk_score:
-      prediction.risk_score,
+    moderate: risk === "Moderate" ? 1 : 0,
+    high: risk === "High" ? 1 : 0,
+    very_high: risk === "Very High" ? 1 : 0,
+    average_risk_score: prediction.risk_score,
+    maximum_risk_score: prediction.risk_score,
   };
 }
 
@@ -139,8 +122,7 @@ function AnalyticsCards({ data }) {
   const high = data?.high ?? 0;
   const veryHigh = data?.very_high ?? 0;
 
-  const highRiskTotal =
-    high + veryHigh;
+  const highRiskTotal = high + veryHigh;
 
   const highRiskPercentage =
     total > 0
@@ -156,17 +138,12 @@ function AnalyticsCards({ data }) {
     <section className="analyticsDashboard">
       <div className="analyticsIntro">
         <div>
-          <span className="eyebrow">
-            AI ANALYTICS
-          </span>
+          <span className="eyebrow">AI ANALYTICS</span>
 
-          <h2>
-            Risk Intelligence Overview
-          </h2>
+          <h2>Risk Intelligence Overview</h2>
 
           <p>
-            Simple visual summary of current
-            LandslideAI prediction results.
+            Simple visual summary of current LandslideAI prediction results.
           </p>
         </div>
       </div>
@@ -185,9 +162,7 @@ function AnalyticsCards({ data }) {
         <div className="analyticsStatCard greenStat">
           <span>Low + Moderate</span>
 
-          <strong>
-            {safePercentage}%
-          </strong>
+          <strong>{safePercentage}%</strong>
 
           <small>
             Predictions outside the high-risk group
@@ -197,9 +172,7 @@ function AnalyticsCards({ data }) {
         <div className="analyticsStatCard orangeStat">
           <span>High + Very High</span>
 
-          <strong>
-            {highRiskPercentage}%
-          </strong>
+          <strong>{highRiskPercentage}%</strong>
 
           <small>
             Priority predictions requiring review
@@ -265,9 +238,7 @@ function AnalyticsCards({ data }) {
         <div className="card analyticsBigCard">
           <div className="analyticsCardHeader">
             <div>
-              <h3>
-                Risk Score Overview
-              </h3>
+              <h3>Risk Score Overview</h3>
 
               <p>
                 AI-derived average and maximum score
@@ -282,14 +253,10 @@ function AnalyticsCards({ data }) {
           <div className="scoreCompare">
             <div className="scoreMetric">
               <div className="scoreMetricTop">
-                <span>
-                  Average Risk
-                </span>
+                <span>Average Risk</span>
 
                 <strong>
-                  {data?.average_risk_score?.toFixed(
-                    2
-                  ) ?? "0.00"}
+                  {data?.average_risk_score?.toFixed(2) ?? "0.00"}
                 </strong>
               </div>
 
@@ -308,14 +275,10 @@ function AnalyticsCards({ data }) {
 
             <div className="scoreMetric">
               <div className="scoreMetricTop">
-                <span>
-                  Maximum Risk
-                </span>
+                <span>Maximum Risk</span>
 
                 <strong>
-                  {data?.maximum_risk_score?.toFixed(
-                    2
-                  ) ?? "0.00"}
+                  {data?.maximum_risk_score?.toFixed(2) ?? "0.00"}
                 </strong>
               </div>
 
@@ -339,15 +302,11 @@ function AnalyticsCards({ data }) {
             </div>
 
             <div>
-              <strong>
-                What does this mean?
-              </strong>
+              <strong>What does this mean?</strong>
 
               <p>
-                A higher risk score indicates
-                a stronger preliminary landslide
-                signal from the AI prediction
-                pipeline.
+                A higher risk score indicates a stronger preliminary landslide
+                signal from the AI prediction pipeline.
               </p>
             </div>
           </div>
@@ -357,9 +316,7 @@ function AnalyticsCards({ data }) {
       <div className="card analyticsSummaryPanel">
         <div className="analyticsCardHeader">
           <div>
-            <h3>
-              Operational Summary
-            </h3>
+            <h3>Operational Summary</h3>
 
             <p>
               Quick interpretation for monitoring
@@ -434,15 +391,9 @@ function AnalyticsCards({ data }) {
 ========================================================= */
 
 function App() {
-  const [data, setData] =
-    useState(null);
-
-  const [loading, setLoading] =
-    useState(true);
-
-  const [error, setError] =
-    useState("");
-
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [activeSection, setActiveSection] =
     useState("dashboard");
 
@@ -480,8 +431,7 @@ function App() {
         );
       }
 
-      const result =
-        await response.json();
+      const result = await response.json();
 
       setData(result);
     } catch (err) {
@@ -559,120 +509,114 @@ function App() {
      UPLOAD + PREDICTION
   ======================================================= */
 
-  const handlePredictUpload =
-    async () => {
-      if (!selectedFile) {
-        setUploadError(
-          "Please select a .h5 file first."
-        );
+  const handlePredictUpload = async () => {
+    if (!selectedFile) {
+      setUploadError(
+        "Please select a .h5 file first."
+      );
 
-        return;
+      return;
+    }
+
+    try {
+      setUploading(true);
+      setUploadError("");
+      setUploadResult(null);
+
+      const formData = new FormData();
+
+      formData.append(
+        "file",
+        selectedFile
+      );
+
+      const response = await fetch(
+        `${API_BASE}/api/predict`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const result =
+        await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result?.message ||
+            `API returned ${response.status}`
+        );
       }
 
-      try {
-        setUploading(true);
-        setUploadError("");
-        setUploadResult(null);
-
-        const formData =
-          new FormData();
-
-        formData.append(
-          "file",
-          selectedFile
+      if (result.status !== "success") {
+        throw new Error(
+          result?.message ||
+            "Prediction failed."
         );
-
-        const response =
-          await fetch(
-            `${API_BASE}/api/predict`,
-            {
-              method: "POST",
-              body: formData,
-            }
-          );
-
-        const result =
-          await response.json();
-
-        if (!response.ok) {
-          throw new Error(
-            result?.message ||
-              `API returned ${response.status}`
-          );
-        }
-
-        if (
-          result.status !==
-          "success"
-        ) {
-          throw new Error(
-            result?.message ||
-              "Prediction failed."
-          );
-        }
-
-        setUploadResult(result);
-
-        const predictionRecord = {
-          image:
-            result.filename.replace(
-              /\.h5$/i,
-              ""
-            ),
-
-          filename:
-            result.filename,
-
-          predicted_area_percent:
-            result.prediction
-              .predicted_area_percent,
-
-          mean_probability:
-            result.prediction
-              .mean_probability,
-
-          max_probability:
-            result.prediction
-              .max_probability,
-
-          risk_score:
-            result.prediction
-              .risk_score,
-
-          risk_level:
-            result.prediction
-              .risk_level,
-
-          input_shape:
-            result.input_shape,
-
-          prediction_id:
-            result.prediction_id,
-        };
-
-        setCurrentPrediction(
-          predictionRecord
-        );
-
-        setData(
-          buildDashboardFromPrediction(
-            result
-          )
-        );
-      } catch (err) {
-        console.error(
-          "Upload prediction error:",
-          err
-        );
-
-        setUploadError(
-          err.message ||
-            "Unable to process the uploaded image."
-        );
-      } finally {
-        setUploading(false);
       }
-    };
+
+      setUploadResult(result);
+
+      const predictionRecord = {
+        image:
+          result.filename.replace(
+            /\.h5$/i,
+            ""
+          ),
+
+        filename:
+          result.filename,
+
+        predicted_area_percent:
+          result.prediction
+            .predicted_area_percent,
+
+        mean_probability:
+          result.prediction
+            .mean_probability,
+
+        max_probability:
+          result.prediction
+            .max_probability,
+
+        risk_score:
+          result.prediction
+            .risk_score,
+
+        risk_level:
+          result.prediction
+            .risk_level,
+
+        input_shape:
+          result.input_shape,
+
+        prediction_id:
+          result.prediction_id,
+      };
+
+      setCurrentPrediction(
+        predictionRecord
+      );
+
+      setData(
+        buildDashboardFromPrediction(
+          result
+        )
+      );
+    } catch (err) {
+      console.error(
+        "Upload prediction error:",
+        err
+      );
+
+      setUploadError(
+        err.message ||
+          "Unable to process the uploaded image."
+      );
+    } finally {
+      setUploading(false);
+    }
+  };
 
   /* =======================================================
      CURRENT DASHBOARD VALUES
@@ -704,6 +648,7 @@ function App() {
       <aside className="sidebar">
 
         <div className="brand">
+
           <div className="brandIcon">
             ⛰️
           </div>
@@ -717,6 +662,7 @@ function App() {
               Risk Monitoring
             </p>
           </div>
+
         </div>
 
         <div className="sectionTitle">
@@ -784,6 +730,7 @@ function App() {
         </button>
 
         <div className="sideStatus">
+
           <div className="onlineRow">
             <span className="onlineDot"></span>
             API Online
@@ -792,7 +739,9 @@ function App() {
           <p>
             U-Net inference engine active
           </p>
+
         </div>
+
       </aside>
 
       {/* =================================================
@@ -808,6 +757,7 @@ function App() {
         <header className="topbar">
 
           <div>
+
             <h2>
               Landslide Risk Dashboard
             </h2>
@@ -816,6 +766,7 @@ function App() {
               AI-powered monitoring and early
               warning intelligence
             </p>
+
           </div>
 
           <div className="topActions">
@@ -846,7 +797,9 @@ function App() {
             >
               ↻ Refresh
             </button>
+
           </div>
+
         </header>
 
         {/* =================================================
@@ -899,8 +852,11 @@ function App() {
                 <span>
                   ⚡ Risk Engine Active
                 </span>
+
               </div>
+
             </div>
+
           </section>
 
           {error && (
@@ -914,7 +870,9 @@ function App() {
           <section className="kpiGrid">
 
             <div className="card kpiCard">
+
               <div className="kpiHeader">
+
                 <span>
                   IMAGES ANALYZED
                 </span>
@@ -922,6 +880,7 @@ function App() {
                 <div className="kpiIcon blue">
                   🛰️
                 </div>
+
               </div>
 
               <strong>
@@ -933,10 +892,13 @@ function App() {
               <p>
                 Prediction records available
               </p>
+
             </div>
 
             <div className="card kpiCard">
+
               <div className="kpiHeader">
+
                 <span>
                   AVERAGE RISK
                 </span>
@@ -944,23 +906,25 @@ function App() {
                 <div className="kpiIcon cyan">
                   📈
                 </div>
+
               </div>
 
               <strong>
                 {loading
                   ? "..."
-                  : averageRisk.toFixed(
-                      2
-                    )}
+                  : averageRisk.toFixed(2)}
               </strong>
 
               <p>
                 Preliminary AI-derived score
               </p>
+
             </div>
 
             <div className="card kpiCard">
+
               <div className="kpiHeader">
+
                 <span>
                   HIGH RISK
                 </span>
@@ -968,6 +932,7 @@ function App() {
                 <div className="kpiIcon orange">
                   ⚠️
                 </div>
+
               </div>
 
               <strong>
@@ -979,10 +944,13 @@ function App() {
               <p>
                 High + very high predictions
               </p>
+
             </div>
 
             <div className="card kpiCard">
+
               <div className="kpiHeader">
+
                 <span>
                   MAXIMUM RISK
                 </span>
@@ -990,20 +958,21 @@ function App() {
                 <div className="kpiIcon red">
                   🚨
                 </div>
+
               </div>
 
               <strong>
                 {loading
                   ? "..."
-                  : maximumRisk.toFixed(
-                      2
-                    )}
+                  : maximumRisk.toFixed(2)}
               </strong>
 
               <p>
                 Highest detected risk score
               </p>
+
             </div>
+
           </section>
 
           {/* =================================================
@@ -1016,24 +985,27 @@ function App() {
               marginTop: "20px",
             }}
           >
+
             <div className="panelHeader">
 
               <div>
+
                 <h3>
                   Upload Satellite Image
                 </h3>
 
                 <p>
-                  Upload a 128 × 128 ×
-                  14-channel H5 image to
-                  generate a new AI landslide
-                  risk prediction.
+                  Upload a 128 × 128 × 14-channel
+                  H5 image to generate a new AI
+                  landslide risk prediction.
                 </p>
+
               </div>
 
               <span className="smallBadge">
                 AI Prediction
               </span>
+
             </div>
 
             <div
@@ -1094,6 +1066,7 @@ function App() {
                     </strong>
                   </div>
                 )}
+
               </div>
 
               <button
@@ -1117,6 +1090,7 @@ function App() {
                   ? "⏳ Predicting..."
                   : "🚀 Predict Risk"}
               </button>
+
             </div>
 
             {uploadError && (
@@ -1174,10 +1148,9 @@ function App() {
                         margin: 0,
                       }}
                     >
-                      {
-                        uploadResult.filename
-                      }
+                      {uploadResult.filename}
                     </h3>
+
                   </div>
 
                   <span
@@ -1199,6 +1172,7 @@ function App() {
                       userPrediction?.risk_level
                     }
                   </span>
+
                 </div>
 
                 <div
@@ -1211,6 +1185,7 @@ function App() {
                 >
 
                   <div className="card">
+
                     <span>
                       Predicted Area
                     </span>
@@ -1218,22 +1193,20 @@ function App() {
                     <strong
                       style={{
                         display: "block",
-                        marginTop:
-                          "8px",
-                        fontSize:
-                          "24px",
+                        marginTop: "8px",
+                        fontSize: "24px",
                       }}
                     >
                       {userPrediction
                         ?.predicted_area_percent
-                        ?.toFixed(
-                          2
-                        ) ?? "0.00"}
+                        ?.toFixed(2) ?? "0.00"}
                       %
                     </strong>
+
                   </div>
 
                   <div className="card">
+
                     <span>
                       Mean Probability
                     </span>
@@ -1241,25 +1214,24 @@ function App() {
                     <strong
                       style={{
                         display: "block",
-                        marginTop:
-                          "8px",
-                        fontSize:
-                          "24px",
+                        marginTop: "8px",
+                        fontSize: "24px",
                       }}
                     >
                       {(
                         (
-                          userPrediction?.mean_probability ??
+                          userPrediction
+                            ?.mean_probability ??
                           0
                         ) * 100
-                      ).toFixed(
-                        2
-                      )}
+                      ).toFixed(2)}
                       %
                     </strong>
+
                   </div>
 
                   <div className="card">
+
                     <span>
                       Max Probability
                     </span>
@@ -1267,25 +1239,24 @@ function App() {
                     <strong
                       style={{
                         display: "block",
-                        marginTop:
-                          "8px",
-                        fontSize:
-                          "24px",
+                        marginTop: "8px",
+                        fontSize: "24px",
                       }}
                     >
                       {(
                         (
-                          userPrediction?.max_probability ??
+                          userPrediction
+                            ?.max_probability ??
                           0
                         ) * 100
-                      ).toFixed(
-                        2
-                      )}
+                      ).toFixed(2)}
                       %
                     </strong>
+
                   </div>
 
                   <div className="card">
+
                     <span>
                       Risk Score
                     </span>
@@ -1293,20 +1264,18 @@ function App() {
                     <strong
                       style={{
                         display: "block",
-                        marginTop:
-                          "8px",
-                        fontSize:
-                          "24px",
+                        marginTop: "8px",
+                        fontSize: "24px",
                       }}
                     >
                       {userPrediction
                         ?.risk_score
-                        ?.toFixed(
-                          2
-                        ) ?? "0.00"}
+                        ?.toFixed(2) ?? "0.00"}
                       /100
                     </strong>
+
                   </div>
+
                 </div>
 
                 <div
@@ -1323,8 +1292,80 @@ function App() {
                   {" | "}
                   Prediction generated by U-Net
                 </div>
+
+                {/* =================================================
+                    EARLY WARNING ALERT — ONLY ADDED FEATURE
+                ================================================= */}
+
+                {(userPrediction?.risk_level === "High" ||
+                  userPrediction?.risk_level === "Very High") && (
+                  <div
+                    style={{
+                      marginTop: "20px",
+                      padding: "18px 20px",
+                      borderRadius: "14px",
+                      background:
+                        userPrediction.risk_level === "Very High"
+                          ? "rgba(127,29,29,0.28)"
+                          : "rgba(124,45,18,0.28)",
+                      border:
+                        userPrediction.risk_level === "Very High"
+                          ? "1px solid rgba(248,113,113,0.55)"
+                          : "1px solid rgba(251,146,60,0.55)",
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: "14px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "28px",
+                        lineHeight: 1,
+                      }}
+                    >
+                      🚨
+                    </div>
+
+                    <div>
+                      <div
+                        style={{
+                          fontSize: "16px",
+                          fontWeight: "800",
+                          color:
+                            userPrediction.risk_level ===
+                            "Very High"
+                              ? "#fca5a5"
+                              : "#fdba74",
+                          marginBottom: "6px",
+                        }}
+                      >
+                        EARLY WARNING ALERT
+                      </div>
+
+                      <p
+                        style={{
+                          margin: 0,
+                          color: "#dce6f5",
+                          fontSize: "13px",
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        AI has detected a{" "}
+                        <strong>
+                          {userPrediction.risk_level}
+                        </strong>{" "}
+                        landslide risk for this prediction.
+                        Please review the result, monitor
+                        local conditions, and follow
+                        official instructions when applicable.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
               </div>
             )}
+
           </section>
 
           {/* =================================================
@@ -1338,6 +1379,7 @@ function App() {
               <div className="panelHeader">
 
                 <div>
+
                   <h3>
                     High-Risk Monitoring
                   </h3>
@@ -1345,7 +1387,9 @@ function App() {
                   <p>
                     Current priority indicators
                   </p>
+
                 </div>
+
               </div>
 
               <div className="alertCard danger">
@@ -1367,7 +1411,9 @@ function App() {
                     currently classified as
                     very high preliminary risk.
                   </p>
+
                 </div>
+
               </div>
 
               <div className="alertCard warning">
@@ -1389,8 +1435,11 @@ function App() {
                     generated high-risk
                     indicators.
                   </p>
+
                 </div>
+
               </div>
+
             </div>
 
             <div className="card panel">
@@ -1398,6 +1447,7 @@ function App() {
               <div className="panelHeader">
 
                 <div>
+
                   <h3>
                     AI Monitoring Note
                   </h3>
@@ -1405,7 +1455,9 @@ function App() {
                   <p>
                     Interpretation guidance
                   </p>
+
                 </div>
+
               </div>
 
               <div className="infoBox">
@@ -1422,9 +1474,13 @@ function App() {
                   prioritization, not as an official
                   government hazard classification.
                 </p>
+
               </div>
+
             </div>
+
           </section>
+
         </section>
 
         {/* =================================================
@@ -1474,9 +1530,11 @@ function App() {
                 marginTop: "20px",
               }}
             >
+
               <div className="panelHeader">
 
                 <div>
+
                   <h3>
                     🛡️ Recommended Precautions
                   </h3>
@@ -1485,13 +1543,13 @@ function App() {
                     Risk-level based monitoring
                     guidance for the current prediction
                   </p>
+
                 </div>
 
                 <span className="smallBadge">
-                  {
-                    userPrediction.risk_level
-                  }
+                  {userPrediction.risk_level}
                 </span>
+
               </div>
 
               <div
@@ -1501,6 +1559,7 @@ function App() {
                   gap: "12px",
                 }}
               >
+
                 {getPrecautions(
                   userPrediction.risk_level
                 ).map(
@@ -1525,6 +1584,7 @@ function App() {
                           "1px solid rgba(148,163,184,0.16)",
                       }}
                     >
+
                       <span
                         style={{
                           fontSize:
@@ -1546,13 +1606,13 @@ function App() {
                             "1.5",
                         }}
                       >
-                        {
-                          precaution
-                        }
+                        {precaution}
                       </span>
+
                     </div>
                   )
                 )}
+
               </div>
 
               <div
@@ -1579,6 +1639,7 @@ function App() {
                 professional assessment, or
                 instructions from local authorities.
               </div>
+
             </section>
           )}
 
