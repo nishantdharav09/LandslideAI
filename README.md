@@ -1,8 +1,8 @@
 # 🌍 LandslideAI
 
-LandslideAI is an AI/ML project for detecting possible landslide areas from geospatial images and showing the risk level.
+LandslideAI is an AI/ML project developed to detect possible landslide areas from geospatial images and show the risk level.
 
-This project was developed as a student project to learn and apply **Machine Learning, Deep Learning and Web Development**.
+This project was developed as a student project to learn and apply **AI, Machine Learning, Deep Learning and Web Development**.
 
 ## 📌 Features
 
@@ -80,65 +80,149 @@ models/
 └── channel_stats.npz
 ```
 
-These files are required to run the prediction system.
+These files are required to run predictions.
 
-## ⚙️ Installation
+## 💻 How to Download and Run
 
-Clone the project:
+There are two ways to run this project.
 
-```bash
+---
+
+# Option 1: Download ZIP
+
+### Step 1: Download the Project
+
+Open the GitHub repository:
+
+https://github.com/nishantdharav09/LandslideAI
+
+Click:
+
+```text
+Code → Download ZIP
+```
+
+### Step 2: Extract the ZIP
+
+Extract the downloaded ZIP file.
+
+### Step 3: Open in VS Code
+
+Open the extracted **LandslideAI** folder in VS Code.
+
+### Step 4: Open Terminal
+
+In VS Code:
+
+```text
+Terminal → New Terminal
+```
+
+### Step 5: Install Python Dependencies
+
+Make sure you are in the main project folder and run:
+
+```powershell
+pip install -r requirements.txt
+```
+
+### Step 6: Install Frontend Dependencies
+
+```powershell
+cd frontend-react
+npm.cmd install
+```
+
+---
+
+# Option 2: Clone the Repository
+
+Open PowerShell:
+
+```powershell
 git clone https://github.com/nishantdharav09/LandslideAI.git
 ```
 
 Go to the project:
 
-```bash
+```powershell
 cd LandslideAI
 ```
 
 Install Python packages:
 
-```bash
+```powershell
 pip install -r requirements.txt
 ```
 
-For frontend:
+Go to frontend:
 
-```bash
+```powershell
 cd frontend-react
-npm install
 ```
 
-## ▶️ Run the Project
+Install frontend packages:
 
-### Backend
+```powershell
+npm.cmd install
+```
+
+---
+
+# ▶️ Run the Project
+
+The backend and frontend should be run in **two terminals**.
+
+## Terminal 1 - Backend
 
 From the main project folder:
 
-```bash
+```powershell
 python -m uvicorn src.api:app --host 127.0.0.1 --port 8010
 ```
 
-Backend:
+Backend URL:
 
 ```text
 http://127.0.0.1:8010
 ```
 
-### Frontend
+API documentation:
+
+```text
+http://127.0.0.1:8010/docs
+```
+
+## Terminal 2 - Frontend
 
 Open another terminal:
 
-```bash
+```powershell
 cd frontend-react
-npm run dev
 ```
 
-Frontend:
+Run:
+
+```powershell
+npm.cmd run dev
+```
+
+Frontend URL:
 
 ```text
 http://localhost:5173/
 ```
+
+Open the frontend URL in your browser.
+
+## 📤 How to Use
+
+1. Open the website.
+2. Upload an `.h5` image.
+3. The image is processed by the backend.
+4. The U-Net model predicts possible landslide areas.
+5. The system calculates the risk.
+6. The result is shown on the dashboard.
 
 ## 📊 Prediction Result
 
@@ -149,7 +233,7 @@ The application shows:
 * Maximum Probability
 * Risk Score
 * Risk Level
-* Prediction Image
+* Prediction Visualization
 
 ## 🚨 Risk Levels
 
@@ -175,7 +259,7 @@ The main aim of this project is to use AI and Deep Learning to detect possible l
 
 ## ⚠️ Disclaimer
 
-This project is made for **educational and student project purposes**.
+This project is made for educational and student project purposes.
 
 The prediction results should not be treated as an official government or emergency warning.
 
