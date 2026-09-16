@@ -1,8 +1,8 @@
 # 🌍 LandslideAI
 
-LandslideAI is an AI/ML project developed to detect possible landslide areas from geospatial images and show the risk level.
+LandslideAI is an **AI/ML based student project** developed to detect possible landslide areas from geospatial images and show the risk level.
 
-This project was developed as a student project to learn and apply **AI, Machine Learning, Deep Learning and Web Development**.
+The project uses a **U-Net deep learning model** for landslide segmentation and a **React + FastAPI** web application to display the prediction results.
 
 ## 📌 Features
 
@@ -10,10 +10,11 @@ This project was developed as a student project to learn and apply **AI, Machine
 * U-Net deep learning model
 * H5 image support
 * Landslide area prediction
-* Risk score
-* Risk level
+* Risk score calculation
+* Risk level detection
 * Prediction visualization
-* Risk alerts
+* Risk Alerts
+* **Early Warning Alert**
 * Recommended precautions
 * Web dashboard
 
@@ -28,12 +29,23 @@ U-Net Model
    ↓
 Landslide Prediction
    ↓
-Risk Calculation
+Risk Score
    ↓
 Risk Level
    ↓
+Early Warning Alert
+   ↓
 Dashboard
 ```
+
+## 🚨 Early Warning
+
+The system provides an **Early Warning Alert** when the AI prediction shows:
+
+* High Risk
+* Very High Risk
+
+The alert helps the user identify predictions that need additional monitoring and review.
 
 ## 🛠️ Technologies Used
 
@@ -45,34 +57,21 @@ Dashboard
 * Vite
 * NumPy
 * h5py
+* Matplotlib
 
 ## 📂 Dataset
 
 This project uses the **Landslide4Sense Dataset** from Kaggle.
 
-Kaggle Link:
+### Kaggle Link
 
 https://www.kaggle.com/datasets/tekbahadurkshetri/landslide4sense?resource=download
 
-## 📁 Project Structure
-
-```text
-LandslideAI/
-│
-├── frontend-react/
-├── src/
-├── models/
-├── TestData/
-├── predictions/
-├── screenshots/
-├── requirements.txt
-├── .gitignore
-└── README.md
-```
+The dataset is used for training, validation and testing.
 
 ## 🤖 Model Files
 
-The project uses:
+The project uses the following trained model files:
 
 ```text
 models/
@@ -80,17 +79,44 @@ models/
 └── channel_stats.npz
 ```
 
-These files are required to run predictions.
+These files are required for running AI predictions.
 
-## 💻 How to Download and Run
+## 📁 Project Structure
 
-There are two ways to run this project.
+```text
+LandslideAI/
+│
+├── frontend-react/
+│   ├── src/
+│   ├── package.json
+│   └── ...
+│
+├── src/
+│   ├── api.py
+│   ├── train.py
+│   ├── dataset.py
+│   ├── unet_model.py
+│   └── ...
+│
+├── models/
+│   ├── best_unet.pth
+│   └── channel_stats.npz
+│
+├── TestData/
+│   └── img/
+│
+├── predictions/
+├── screenshots/
+├── requirements.txt
+├── .gitignore
+└── README.md
+```
 
----
+# 💻 How to Run
 
-# Option 1: Download ZIP
+There are two ways to run the project.
 
-### Step 1: Download the Project
+## 1️⃣ Download ZIP
 
 Open the GitHub repository:
 
@@ -102,40 +128,33 @@ Click:
 Code → Download ZIP
 ```
 
-### Step 2: Extract the ZIP
+Extract the ZIP file and open the **LandslideAI** folder in VS Code.
 
-Extract the downloaded ZIP file.
-
-### Step 3: Open in VS Code
-
-Open the extracted **LandslideAI** folder in VS Code.
-
-### Step 4: Open Terminal
-
-In VS Code:
+Open:
 
 ```text
 Terminal → New Terminal
 ```
 
-### Step 5: Install Python Dependencies
-
-Make sure you are in the main project folder and run:
+Install Python packages:
 
 ```powershell
 pip install -r requirements.txt
 ```
 
-### Step 6: Install Frontend Dependencies
+Go to frontend:
 
 ```powershell
 cd frontend-react
+```
+
+Install frontend packages:
+
+```powershell
 npm.cmd install
 ```
 
----
-
-# Option 2: Clone the Repository
+## 2️⃣ Clone Repository
 
 Open PowerShell:
 
@@ -167,8 +186,6 @@ Install frontend packages:
 npm.cmd install
 ```
 
----
-
 # ▶️ Run the Project
 
 The backend and frontend should be run in **two terminals**.
@@ -181,13 +198,13 @@ From the main project folder:
 python -m uvicorn src.api:app --host 127.0.0.1 --port 8010
 ```
 
-Backend URL:
+Backend:
 
 ```text
 http://127.0.0.1:8010
 ```
 
-API documentation:
+API Documentation:
 
 ```text
 http://127.0.0.1:8010/docs
@@ -207,26 +224,29 @@ Run:
 npm.cmd run dev
 ```
 
-Frontend URL:
+Frontend:
 
 ```text
 http://localhost:5173/
 ```
 
-Open the frontend URL in your browser.
+Open the frontend link in your browser.
 
 ## 📤 How to Use
 
 1. Open the website.
-2. Upload an `.h5` image.
-3. The image is processed by the backend.
-4. The U-Net model predicts possible landslide areas.
-5. The system calculates the risk.
-6. The result is shown on the dashboard.
+2. Select a valid `.h5` image.
+3. Click **Predict Risk**.
+4. The backend processes the image.
+5. The U-Net model generates the prediction.
+6. The system calculates the risk score.
+7. The dashboard shows the prediction result.
+8. If the risk is **High** or **Very High**, an **Early Warning Alert** is displayed.
+9. Recommended precautions are also shown.
 
 ## 📊 Prediction Result
 
-The application shows:
+The system displays:
 
 * Predicted Area
 * Mean Probability
@@ -235,33 +255,55 @@ The application shows:
 * Risk Level
 * Prediction Visualization
 
+Example:
+
+```text
+Predicted Area    : 7.40%
+Mean Probability  : 85.41%
+Max Probability   : 99.90%
+Risk Score        : 45.27 / 100
+Risk Level        : High
+```
+
 ## 🚨 Risk Levels
 
-| Score  | Risk      |
-| ------ | --------- |
-| 0–19   | Low       |
-| 20–44  | Moderate  |
-| 45–69  | High      |
-| 70–100 | Very High |
+| Risk Score | Risk Level |
+| ---------- | ---------- |
+| 0 – 19     | Low        |
+| 20 – 44    | Moderate   |
+| 45 – 69    | High       |
+| 70 – 100   | Very High  |
 
 ## 🎯 Project Objective
 
-The main aim of this project is to use AI and Deep Learning to detect possible landslide regions and display the result in a simple web application.
+The main aim of this project is to use **AI and Deep Learning** to detect possible landslide regions and show the result through a simple web application.
+
+This project helped me learn about:
+
+* Machine Learning
+* Deep Learning
+* U-Net
+* Image Segmentation
+* Python
+* FastAPI
+* React.js
+* AI model deployment
 
 ## 🔮 Future Scope
 
 * Real-time satellite data
 * Weather and rainfall data
-* GIS map
+* GIS map integration
 * Mobile application
-* Better risk prediction
-* Real-time alerts
+* Improved risk prediction
+* Real-time monitoring
+* Automated notifications
 
-## ⚠️ Disclaimer
+## ⚠️ Note
 
-This project is made for educational and student project purposes.
+This project is developed for **educational and student project purposes**.
 
-The prediction results should not be treated as an official government or emergency warning.
+The prediction is an AI-based preliminary estimate and should not be considered an official government or emergency warning.
 
 ## 👨‍💻 Author
 
